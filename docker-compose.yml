@@ -1,0 +1,58 @@
+services:
+  mariadb:
+    image: mariadb:11
+    container_name: mariadb
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: springboot
+      MYSQL_USER: spring
+      MYSQL_PASSWORD: spring
+    volumes:
+      - mariadb_data:/var/lib/mysql
+    ports:
+      - "3307:3306"
+    networks:
+      - app-net
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  backend:
+    build:
+      context: ./springapp
+    container_name: spring-backend
+    restart: always
+    depends_on:
+      mariadb:
+        condition: service_started
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mariadb://mariadb:3306/springboot
+      SPRING_DATASOURCE_USERNAME: spring
+      SPRING_DATASOURCE_PASSWORD: spring
+    ports:
+      - "8089:8089"
+    networks:
+      - app-net
+
+  frontend:
+    build:
+      context: ./reactapp
+    container_name: app-frontend
+    restart: always
+    depends_on:
+      - backend
+    ports:
+      - "3000:80"
+    networks:
+      - app-net
+
+volumes:
+  mariadb_data:
+
+networks:
+  app-net:
+    driver: bridge
+
