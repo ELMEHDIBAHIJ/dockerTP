@@ -27,12 +27,16 @@ Prerequisites:
 ---
 
 Steps:
+1: clone the project from github 
+   **git clone https://github.com/ELMEHDIBAHIJ/dockerTP.git**
 
-1: Make sure the **Docker daemon is running**
+2: access the project folder **cd dockerTP**
+
+3: Make sure the **Docker daemon is running**
    - **Windows / macOS**: start **Docker Desktop**
    - **Linux**: ensure the Docker service is running
 
-2: Build and start the application:
+4: Build and start the application:
 **docker-compose up --build**
 
 caution: 
